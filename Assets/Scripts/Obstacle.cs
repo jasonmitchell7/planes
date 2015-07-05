@@ -27,6 +27,9 @@ public class Obstacle : MonoBehaviour
 			Vector3 pos = image.rectTransform.position;
 			pos.y -= image.rectTransform.rect.height/2;
 			gm.GetExplosion(pos).Play();
+
+			gm.stats.obstaclesDestroyed++;
+			gm.stats.CalcScore();
 		}
 	}
 

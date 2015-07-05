@@ -144,7 +144,7 @@ public class Plane : MonoBehaviour
 		}
 
 		// Check if planes collide with each other.
-		if (!gm.planeLeft.gameObject.activeSelf || !gm.planeLeft.gameObject.activeSelf)
+		if (!gm.planeLeft.gameObject.activeSelf || !gm.planeRight.gameObject.activeSelf)
 			return true;
 
 		if (isLeft)
@@ -170,13 +170,15 @@ public class Plane : MonoBehaviour
 	public void DoDamage( int damage )
 	{
 		health = health - damage;
-		LoseControl();
+		infoBar.UpdateBar();
 
 		Vector3 pos = this.transform.position;
 		pos.y += planeWidth*0.8f;
 
 		ParticleSystem exp = gm.GetExplosion(pos);
 		exp.Play();
+
+		LoseControl();
 
 		CheckDead();
 
@@ -230,6 +232,7 @@ public class Plane : MonoBehaviour
 	void BeginDestroy()
 	{
 		hasControl = false;
+		infoBar.gameObject.SetActive(false);
 
 		explosionCount = Random.Range(4,6);
 		DestroyExplosions();
@@ -328,5 +331,11 @@ public class Plane : MonoBehaviour
 		EvaluateRedButton();
 	}
 
+	public void ResetSupplies()
+	{
+		health = maxHealth;
+		ammo = maxAmmo;
+		infoBar.UpdateBar();
+	}
 
 }

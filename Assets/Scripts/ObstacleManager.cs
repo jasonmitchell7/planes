@@ -122,6 +122,8 @@ public class ObstacleManager : MonoBehaviour
 		foreach (Image obs in ObstaclesToRemove)
 		{
 			DeactiveateObstacle(obs);
+			gm.stats.obstaclesAvoided++;
+			gm.stats.CalcScore();
 		}
 	}
 

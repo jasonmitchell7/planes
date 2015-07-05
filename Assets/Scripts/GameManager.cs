@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
 	public GameObject PanelObstacles;
 	public GameObject PanelMissiles;
 
-	public Plane planeLeft;
+public Plane planeLeft;
 	public Plane planeRight;
 
 	public Image planeLeftImage;
@@ -51,6 +51,10 @@ public class GameManager : MonoBehaviour
 	public MissileManager mm;
 	public Image MissilePrefab;
 
+	// Stats and Score Variables
+	public Stats stats;
+	public Text score;
+
 
 	void Start () 
 	{
@@ -76,6 +80,11 @@ public class GameManager : MonoBehaviour
 		mm.gm = this;
 
 		Explosions = new List<ParticleSystem>();
+
+		stats = new Stats();
+		stats.gm = this;
+		stats.ResetScore();
+
 
 	}
 	
@@ -128,6 +137,8 @@ public class GameManager : MonoBehaviour
 		else
 		{
 			planeLeftImage.gameObject.SetActive( true );
+			planeLeft.infoBar.gameObject.SetActive(true);
+			planeLeft.ResetSupplies();
 			planeLeftImage.transform.position = new Vector3(sideOffset - 568, bottomOffset - 320, 0f);
 		}
 
@@ -147,6 +158,8 @@ public class GameManager : MonoBehaviour
 		else
 		{
 			planeRightImage.gameObject.SetActive( true );
+			planeRight.infoBar.gameObject.SetActive(true);
+			planeRight.ResetSupplies();
 			planeRightImage.transform.position = new Vector3(Screen.width - sideOffset - planeRightImage.rectTransform.rect.width - 568, bottomOffset - 320, 0f);
 		}
 
@@ -203,4 +216,8 @@ public class GameManager : MonoBehaviour
 		return _isPaused;
 	}
 
+	public void RampGameSpeed()
+	{
+		gameSpeed += 0.1f;
+	}
 }
