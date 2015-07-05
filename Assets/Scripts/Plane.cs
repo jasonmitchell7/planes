@@ -142,6 +142,9 @@ public class Plane : MonoBehaviour
 		}
 
 		// Check if planes collide with each other.
+		if (!gm.planeLeft.gameObject.activeSelf || !gm.planeLeft.gameObject.activeSelf)
+			return true;
+
 		if (isLeft)
 		{
 			if (gm.planeRight.transform.position.x <= pos.x + planeWidth )
@@ -216,7 +219,7 @@ public class Plane : MonoBehaviour
 	{
 		hasControl = false;
 
-		explosionCount = Random.Range(4,8);
+		explosionCount = Random.Range(4,6);
 		DestroyExplosions();
 
 	}
@@ -232,18 +235,38 @@ public class Plane : MonoBehaviour
 
 		explosionCount--;
 
-		if (explosionCount == 0)
+		if (explosionCount <= 0)
 		{
 			EndDestroy();
 		}
 		else
 		{
-			Invoke("DestroyExplosions",Random.Range(0.05f, 0.25f));
+			Invoke("DestroyExplosions",Random.Range(0.2f, 0.3f));
 		}
 	}
 
 	void EndDestroy()
 	{
 		this.gameObject.SetActive(false);
+	}
+
+	public void HealPlane(int amount)
+	{
+		this.health += amount;
+
+		if (this.health > this.maxHealth)
+			this.health = this.maxHealth;
+
+		this.infoBar.Update();
+	}
+
+	public void GiveMoreAmmo(int amount)
+	{
+		this.health += amount;
+		
+		if (this.ammo > this.maxAmmo)
+			this.ammo = this.maxAmmo;
+		
+		this.infoBar.Update();
 	}
 }

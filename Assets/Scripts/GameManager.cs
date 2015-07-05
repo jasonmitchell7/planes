@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
 	public GameObject PanelMain;
 	public GameObject PanelPlanes;
 	public GameObject PanelClouds;
+	public GameObject PanelCollectables;
 	public GameObject PanelExplosions;
 
 	public Plane planeLeft;
@@ -19,32 +20,36 @@ public class GameManager : MonoBehaviour
 	public Image planeLeftImage;
 	public Image planeRightImage;
 
+
 	//Background Variables
+	public Background bg;
 	public Image CloudPrefab;
 	public List<Sprite> CloudSprites;
-
-	private List<Image> BGImages;
-	private List<Image> Clouds;
-
-	public float BGMoveSpeed = 5f;
-	public int maxClouds = 7;
-	public float cloudSpawnChance = 0.8f;
-	private int numClouds = 0;
+	
 
 	// Explosion Variables
 	public ParticleSystem ExplosionPrefab;
 	public List<ParticleSystem> Explosions;
+
+	// Collectable Variables
+	public CollectableManager cm;
+	public Image HealthPackPrefab;
+	public Image AmmoPackPrefab;
 
 	void Start () 
 	{
 		PanelMain = this.transform.FindChild("PanelMain").gameObject;
 		PanelPlanes = PanelMain.transform.FindChild("Planes").gameObject;
 		PanelClouds = PanelMain.transform.FindChild("Clouds").gameObject;
+		PanelCollectables = PanelMain.transform.FindChild("Collectables").gameObject;
 
 		CreateNewPlanes();
 
-		BGImages = new List<Image>();
-		Clouds = new List<Image>();
+		bg = GetComponent<Background>();
+		bg.gm = this;
+
+		cm = GetComponent<CollectableManager>();
+		cm.gm = this;
 
 		Explosions = new List<ParticleSystem>();
 
@@ -53,7 +58,15 @@ public class GameManager : MonoBehaviour
 
 	void Update () 
 	{
-		MoveBG ();
+		if (bg != null )
+		{
+			bg.MoveBG ();
+		}
+
+		if (cm != null )
+		{
+			cm.MoveCollectables();
+		}
 	}
 
 	void CreateNewPlanes()
@@ -101,80 +114,7 @@ public class GameManager : MonoBehaviour
 		}
 
 	}
-	
 
-	void MoveBG()
-	{
-		//( Random.Range(0.0f, 1.0f) <= cloudSpawnChance ) &&
-
-		float r = Random.Range (0.0f, 1.0f);
-
-		if ( (r <= cloudSpawnChance) & (numClouds < maxClouds) )
-		{
-			Image c = GetNewCloud();
-			BGImages.Add( c );
-			numClouds++;
-		}
-
-		List<Image> ImagesToRemove = new List<Image>();
-
-		foreach (Image i in BGImages)
-		{
-			Vector3 pos = i.gameObject.transform.position;
-			pos.y = pos.y - BGMoveSpeed;
-			if (pos.y >= 0 )
-			{
-				i.gameObject.transform.position = pos;
-			}
-			else
-			{
-				ImagesToRemove.Add(i);
-			}
-		}
-
-		foreach (Image i in ImagesToRemove)
-		{
-			if (i.gameObject.name == "Cloud")
-			{
-				Clouds.Add(i);
-				BGImages.Remove(i);
-				i.gameObject.SetActive( false );
-				
-				numClouds--;
-			}
-		}
-	}
-
-	Image GetNewCloud()
-	{
-		Image c;
-
-		if ( Clouds.Count > 0 )
-		{
-			c = Clouds[0];
-			Vector3 pos = new Vector3(Random.Range (0f, Screen.width), Screen.height + c.rectTransform.rect.height, 0);
-			c.transform.position = pos;
-			c.gameObject.SetActive(true);
-			Clouds.RemoveAt(0);
-		}
-		else
-		{
-			c = Instantiate(CloudPrefab);
-			c.transform.SetParent(PanelClouds.transform);
-			Vector3 pos = new Vector3(Random.Range (0f, Screen.width), Screen.height + c.rectTransform.rect.height, 0);
-			c.transform.position = pos;
-			c.gameObject.name = "Cloud";
-			c.sprite = CloudSprites[Random.Range(0,CloudSprites.Count)];
-			if (Random.Range(0,1) == 1)
-			{
-				Vector3 scale = c.rectTransform.localScale;
-				scale.x = -scale.x;
-				c.rectTransform.localScale = scale;
-			}
-		}
-
-		return c;
-	}
 
 	public ParticleSystem GetExplosion(Vector3 pos)
 	{
