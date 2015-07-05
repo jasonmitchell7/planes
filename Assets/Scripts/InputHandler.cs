@@ -13,7 +13,8 @@ public class InputHandler : MonoBehaviour
 
 	void FixedUpdate () 
 	{
-		HandleInputPC();
+		if (!gm.isPaused())
+			HandleInputPC();
 	}
 
 	void HandleInputPC()
@@ -28,6 +29,11 @@ public class InputHandler : MonoBehaviour
 			gm.planeLeft.MoveRight(false);
 		}
 
+		if (Input.GetKey("w"))
+		{
+			gm.planeLeft.fireMissle();
+		}
+
 		if (Input.GetKey(KeyCode.LeftArrow))
 		{
 			gm.planeRight.MoveLeft(false);
@@ -36,6 +42,11 @@ public class InputHandler : MonoBehaviour
 		if (Input.GetKey(KeyCode.RightArrow))
 		{
 			gm.planeRight.MoveRight(false);
+		}
+
+		if (Input.GetKey (KeyCode.UpArrow))
+		{
+			gm.planeRight.fireMissle();
 		}
 	}
 }

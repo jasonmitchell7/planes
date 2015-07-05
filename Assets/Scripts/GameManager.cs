@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
 {
 	public float gameSpeed = 1f;
 
+	private bool _isPaused = false;
+
 	// Plane Variables
 	public Image PlanePrefab;
 
@@ -16,6 +18,7 @@ public class GameManager : MonoBehaviour
 	public GameObject PanelCollectables;
 	public GameObject PanelExplosions;
 	public GameObject PanelObstacles;
+	public GameObject PanelMissiles;
 
 	public Plane planeLeft;
 	public Plane planeRight;
@@ -44,6 +47,10 @@ public class GameManager : MonoBehaviour
 	public List<Sprite> ObstacleSprites;
 	public Image ObstaclePrefab;
 
+	// Missle Variables
+	public MissileManager mm;
+	public Image MissilePrefab;
+
 
 	void Start () 
 	{
@@ -52,6 +59,7 @@ public class GameManager : MonoBehaviour
 		PanelClouds = PanelMain.transform.FindChild("Clouds").gameObject;
 		PanelCollectables = PanelMain.transform.FindChild("Collectables").gameObject;
 		PanelObstacles = PanelMain.transform.FindChild("Obstacles").gameObject;
+		PanelMissiles = PanelMain.transform.FindChild("Missiles").gameObject;
 
 		CreateNewPlanes();
 
@@ -64,6 +72,9 @@ public class GameManager : MonoBehaviour
 		om = GetComponent<ObstacleManager>();
 		om.gm = this;
 
+		mm = GetComponent<MissileManager>();
+		mm.gm = this;
+
 		Explosions = new List<ParticleSystem>();
 
 	}
@@ -71,19 +82,27 @@ public class GameManager : MonoBehaviour
 
 	void Update () 
 	{
-		if (bg != null )
+		if (!_isPaused)
 		{
-			bg.MoveBG ();
-		}
+			if (bg != null )
+			{
+				bg.MoveBG ();
+			}
 
-		if (cm != null )
-		{
-			cm.MoveCollectables();
-		}
+			if (cm != null )
+			{
+				cm.MoveCollectables();
+			}
 
-		if (om != null )
-		{
-			om.MoveObstacles();
+			if (om != null )
+			{
+				om.MoveObstacles();
+			}
+
+			if (mm != null )
+			{
+				mm.MoveMissiles();
+			}
 		}
 	}
 
@@ -96,14 +115,14 @@ public class GameManager : MonoBehaviour
 		{
 			planeLeftImage = Instantiate(PlanePrefab) as Image;
 			planeLeftImage.transform.SetParent( PanelPlanes.transform );
-			planeLeftImage.gameObject.name = "PlaneLeft";
+			planeLeftImage.gameObject.name = "Plane";
 			planeLeftImage.transform.position = new Vector3(sideOffset - 568, bottomOffset - 320, 0f);
 			planeLeft = planeLeftImage.gameObject.GetComponent<Plane>();
 			planeLeft.gm = this;
 			planeLeft.isLeft = true;
 			planeLeft.infoBar = PanelMain.transform.FindChild("InfoBars").FindChild("Left").GetComponent<InfoBar>();
 			planeLeft.infoBar.SetPlane(planeLeft);
-			planeLeft.infoBar.Update();
+			planeLeft.infoBar.UpdateBar();
 
 		}
 		else
@@ -116,14 +135,14 @@ public class GameManager : MonoBehaviour
 		{
 			planeRightImage = Instantiate(PlanePrefab) as Image;
 			planeRightImage.transform.SetParent( PanelPlanes.transform );
-			planeRightImage.gameObject.name = "PlaneRight";
+			planeRightImage.gameObject.name = "Plane";
 			planeRightImage.transform.position = new Vector3(Screen.width - sideOffset - planeRightImage.rectTransform.rect.width - 568, bottomOffset - 320, 0f);
 			planeRight = planeRightImage.gameObject.GetComponent<Plane>();
 			planeRight.gm = this;
 			planeRight.isLeft = false;
 			planeRight.infoBar = PanelMain.transform.FindChild("InfoBars").FindChild("Right").GetComponent<InfoBar>();
 			planeRight.infoBar.SetPlane(planeRight);
-			planeRight.infoBar.Update();
+			planeRight.infoBar.UpdateBar();
 		}
 		else
 		{
@@ -155,6 +174,33 @@ public class GameManager : MonoBehaviour
 
 
 		return exp;
+	}
+
+	public void PauseGame()
+	{
+		_isPaused = true;
+	}
+
+	public void UnpauseGame()
+	{
+		_isPaused = false;
+	}
+
+	public void PauseButtonClicked()
+	{
+		if (_isPaused)
+		{
+			UnpauseGame();
+		}
+		else
+		{
+			PauseGame();
+		}
+	}
+
+	public bool isPaused()
+	{
+		return _isPaused;
 	}
 
 }

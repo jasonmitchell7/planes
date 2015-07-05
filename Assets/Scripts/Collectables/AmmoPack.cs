@@ -10,9 +10,22 @@ public class AmmoPack : Collectable
 	
 	void OnTriggerEnter2D( Collider2D col )
 	{
-		col.gameObject.GetComponent<Plane>().GiveMoreAmmo(Random.Range(amountMin,amountMax));
-		
-		gm.cm.UseAmmoPack(this);
+		if ( col.gameObject.name == "Plane")
+		{
+			col.gameObject.GetComponent<Plane>().GiveMoreAmmo(Random.Range(amountMin,amountMax));
+			
+			gm.cm.UseAmmoPack(this);
+		}
+
+		if( col.gameObject.name == "Missile" )
+		{
+			gm.mm.DeactivateMissile( col.gameObject.GetComponent<Image>() );
+			gm.cm.UseAmmoPack(this);
+
+			Vector3 pos = image.rectTransform.position;
+			pos.y -= image.rectTransform.rect.height/2;
+			gm.GetExplosion(pos).Play();
+		}
 	}
 
 }

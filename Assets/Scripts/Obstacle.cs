@@ -12,9 +12,22 @@ public class Obstacle : MonoBehaviour
 	
 	void OnTriggerEnter2D( Collider2D col )
 	{
-		col.gameObject.GetComponent<Plane>().DoDamage(damageAmount);
+		if ( col.gameObject.name == "Plane")
+		{
+			col.gameObject.GetComponent<Plane>().DoDamage(damageAmount);
 
-		gm.om.DeactiveateObstacle(image);
+			gm.om.DeactiveateObstacle(image);
+		}
+
+		if( col.gameObject.name == "Missile" )
+		{
+			gm.mm.DeactivateMissile( col.gameObject.GetComponent<Image>() );
+			gm.om.DeactiveateObstacle(image);
+			
+			Vector3 pos = image.rectTransform.position;
+			pos.y -= image.rectTransform.rect.height/2;
+			gm.GetExplosion(pos).Play();
+		}
 	}
 
 }

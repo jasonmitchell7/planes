@@ -8,7 +8,7 @@ public class Collectable : MonoBehaviour
 	public GameManager gm;
 
 	private float moveSpeedMin = 4f;
-	private float moveSpeedMax = 7f;
+	private float moveSpeedMax = 6f;
 
 	public float speed;
 

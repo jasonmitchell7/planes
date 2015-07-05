@@ -16,9 +16,9 @@ TagManager:
   - 
   - Foreground
   - Collectable
-  - 
-  - 
-  - 
+  - Missile
+  - Obstacle
+  - Plane
   - 
   - 
   - 

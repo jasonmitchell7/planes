@@ -18,6 +18,8 @@ public class Plane : MonoBehaviour
 	private bool isMoving = false;
 	private bool hasControl = true;
 
+	private bool _isReloading = false;
+
 	public InfoBar infoBar;
 
 	private int explosionCount;
@@ -171,7 +173,7 @@ public class Plane : MonoBehaviour
 		LoseControl();
 
 		Vector3 pos = this.transform.position;
-		pos.y += planeWidth;
+		pos.y += planeWidth*0.8f;
 
 		ParticleSystem exp = gm.GetExplosion(pos);
 		exp.Play();
@@ -185,10 +187,10 @@ public class Plane : MonoBehaviour
 	{
 		gm.planeLeft.health = gm.planeLeft.health - damage;
 		gm.planeLeft.LoseControl();
-		gm.planeLeft.infoBar.Update();
+		gm.planeLeft.infoBar.UpdateBar();
 		gm.planeRight.health = gm.planeRight.health - damage;
 		gm.planeRight.LoseControl();
-		gm.planeRight.infoBar.Update();
+		gm.planeRight.infoBar.UpdateBar();
 
 		Vector3 pos = gm.planeRight.transform.position;
 		pos.y += planeWidth/2 + 5f;
@@ -267,16 +269,64 @@ public class Plane : MonoBehaviour
 		if (this.health > this.maxHealth)
 			this.health = this.maxHealth;
 
-		this.infoBar.Update();
+		infoBar.ShowHealthPickup();
+
+		this.infoBar.UpdateBar();
 	}
 
 	public void GiveMoreAmmo(int amount)
 	{
-		this.health += amount;
+		this.ammo += amount;
 		
 		if (this.ammo > this.maxAmmo)
 			this.ammo = this.maxAmmo;
+
+		infoBar.ShowAmmoPickup();
+		EvaluateRedButton();
 		
-		this.infoBar.Update();
+		this.infoBar.UpdateBar();
 	}
+
+	public void fireMissle()
+	{
+		if ( ammo > 0 & !_isReloading )
+		{
+			Vector3 posLeft = this.transform.position;
+			posLeft.y += planeWidth*0.6f;
+			Vector3 posRight = posLeft;
+			posLeft.x -= planeWidth*0.25f;
+			posRight.x += planeWidth*0.25f;
+
+			gm.mm.NewMissile(posLeft);
+			gm.mm.NewMissile(posRight);
+
+			ammo--;
+			infoBar.UpdateBar();
+
+			_isReloading = true;
+			EvaluateRedButton();
+			Invoke("Reload", 1f);
+
+		}
+	}
+
+	void EvaluateRedButton()
+	{
+		if (_isReloading == false & ammo > 0 )
+		{
+			infoBar.ShowRedButton();
+		}
+		else
+		{
+			infoBar.HideRedButton();
+		}
+	}
+
+	void Reload()
+	{
+		_isReloading = false;
+		EvaluateRedButton();
+	}
+
+
 }

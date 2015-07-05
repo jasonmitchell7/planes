@@ -14,7 +14,9 @@ public class ObstacleManager : MonoBehaviour
 	public float speedMin = 2f;
 	public float speedMax = 6f;
 
-	public int obstaclesMax = 20;
+	private int obstaclesMax = 12;
+	private int obstaclesMaxTotal = 20;
+
 	public float spawnChance = 0.03f;
 
 	void Start()
@@ -36,11 +38,13 @@ public class ObstacleManager : MonoBehaviour
 
 	void CheckSpawn()
 	{
-		
-		if ( (Random.Range (0.0f, 1.0f) <= spawnChance) & (obstaclesInUse.Count < obstaclesMax) )
+		if (obstaclesInUse.Count + obstaclesAvailable.Count < obstaclesMaxTotal)
 		{
-			Image obs = GetNewObstacle();
-			ActivateObstacle( obs );
+			if ( (Random.Range (0.0f, 1.0f) <= spawnChance) & (obstaclesInUse.Count < obstaclesMax) )
+			{
+				Image obs = GetNewObstacle();
+				ActivateObstacle( obs );
+			}
 		}
 	}
 
@@ -49,6 +53,8 @@ public class ObstacleManager : MonoBehaviour
 		obstaclesInUse.Add( obs );
 		obstacleSpeeds.Add( Random.Range( speedMin, speedMax ) );
 		obs.gameObject.SetActive(true);
+
+		obstaclesAvailable.Remove( obs );
 	}
 
 	public void DeactiveateObstacle( Image obs )
@@ -56,6 +62,8 @@ public class ObstacleManager : MonoBehaviour
 		int i = obstaclesInUse.IndexOf(obs);
 		obstaclesInUse.RemoveAt( i );
 		obstacleSpeeds.RemoveAt( i );
+
+		obstaclesAvailable.Add( obs );
 
 		obs.gameObject.SetActive (false);
 	}
@@ -69,7 +77,6 @@ public class ObstacleManager : MonoBehaviour
 			obs = obstaclesAvailable[0];
 			Vector3 pos = new Vector3(Random.Range (0f, Screen.width), Screen.height + obs.rectTransform.rect.height, 0);
 			obs.transform.position = pos;
-			obstaclesAvailable.Remove(obs);
 		}
 		else
 		{
