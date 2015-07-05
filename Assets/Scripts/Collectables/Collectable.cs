@@ -7,8 +7,8 @@ public class Collectable : MonoBehaviour
 	public Image image;
 	public GameManager gm;
 
-	private float moveSpeedMin = 4f;
-	private float moveSpeedMax = 6f;
+	private float moveSpeedMin = 2f;
+	private float moveSpeedMax = 4f;
 
 	public float speed;
 

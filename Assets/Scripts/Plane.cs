@@ -12,11 +12,12 @@ public class Plane : MonoBehaviour
 	public int health;
 	public int maxAmmo;
 	public int ammo;
-	public int planesCollideDamage = 20;
+	public int planesCollideDamage = 25;
 	public float rotationSpeed = 1;
 
 	private bool isMoving = false;
 	private bool hasControl = true;
+	private bool isDying = false;
 
 	private bool _isReloading = false;
 
@@ -211,8 +212,9 @@ public class Plane : MonoBehaviour
 
 	void CheckDead()
 	{
-		if (health <= 0 )
+		if ( health <= 0  & !isDying )
 		{
+			isDying = true;
 			BeginDestroy();
 		}
 	}
@@ -262,7 +264,11 @@ public class Plane : MonoBehaviour
 
 	void EndDestroy()
 	{
+		isDying = false;
 		this.gameObject.SetActive(false);
+
+		if (!gm.planeLeft.gameObject.activeSelf & !gm.planeRight.gameObject.activeSelf )
+			gm.GameOver();
 	}
 
 	public void HealPlane(int amount)
@@ -308,7 +314,7 @@ public class Plane : MonoBehaviour
 
 			_isReloading = true;
 			EvaluateRedButton();
-			Invoke("Reload", 1f);
+			Invoke("Reload", 0.5f);
 
 		}
 	}

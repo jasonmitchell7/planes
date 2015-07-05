@@ -4,13 +4,16 @@ using System.Collections;
 
 public class HealthPack : Collectable
 {
-	private int healAmount = 10;
+	private int healAmount = 25;
 
 	void OnTriggerEnter2D( Collider2D col )
 	{
 		if ( col.gameObject.name == "Plane")
 		{
 			col.gameObject.GetComponent<Plane>().HealPlane(healAmount);
+
+			gm.stats.AddBonusPoints(2);
+			gm.stats.CalcScore();
 
 			gm.cm.UseHealthPack(this);
 		}

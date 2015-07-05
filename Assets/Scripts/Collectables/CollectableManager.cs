@@ -30,8 +30,10 @@ public class CollectableManager : MonoBehaviour
 	
 	public void MoveCollectables()
 	{
-
-		CheckSpawn();
+		if (gm.isPlayable)
+		{
+			CheckSpawn();
+		}
 
 		MoveAmmoPacks();
 		MoveHealthPacks();

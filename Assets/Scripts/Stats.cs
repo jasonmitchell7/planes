@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
+
 public class Stats
 {
 	public GameManager gm;
@@ -14,10 +15,13 @@ public class Stats
 
 	private int lastSpeedIncrease;
 
+	private int totalScore;
+
 	public void ResetScore()
 	{
 		baseScore = 0;
 		bonusScore = 0;
+		totalScore = 0;
 		obstaclesAvoided = 0;
 		obstaclesDestroyed = 0;
 		lastSpeedIncrease = 0;
@@ -36,12 +40,47 @@ public class Stats
 			lastSpeedIncrease = baseScore;
 			if (gm.planeLeft.gameObject.activeSelf & gm.planeRight.gameObject.activeSelf)
 			{
-				bonusScore += 5;
+				AddBonusPoints(5);
 			}
 		}
 
-		int totalScore = baseScore + bonusScore;
+		totalScore = baseScore + bonusScore;
 		gm.score.text = "Score: " + totalScore.ToString();
+	}
+
+	public void AddBonusPoints(int amount)
+	{
+		bonusScore += amount;
+	}
+
+	public int GetScore()
+	{
+		CalcScore();
+
+		return totalScore;
+	}
+
+	public int GetHighScore()
+	{
+		if (!PlayerPrefs.HasKey("Highscore"))
+		{
+			PlayerPrefs.SetInt( "Highscore", 0 );
+		}
+
+		return PlayerPrefs.GetInt("Highscore");
+	}
+
+	public bool CheckNewHighScore()
+	{
+		if ( GetScore() > GetHighScore() )
+		{
+			PlayerPrefs.SetInt( "Highscore", GetScore() );
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 }

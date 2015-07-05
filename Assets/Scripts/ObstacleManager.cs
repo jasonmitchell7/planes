@@ -28,8 +28,10 @@ public class ObstacleManager : MonoBehaviour
 
 	public void MoveObstacles()
 	{
-		
-		CheckSpawn();
+		if (gm.isPlayable)
+		{
+			CheckSpawn();
+		}
 		
 		MoveAll();
 		

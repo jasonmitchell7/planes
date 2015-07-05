@@ -13,7 +13,7 @@ public class InputHandler : MonoBehaviour
 
 	void FixedUpdate () 
 	{
-		if (!gm.isPaused())
+		if (!gm.isPaused() & gm.isPlayable)
 			HandleInputPC();
 	}
 

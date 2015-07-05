@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
 
 	private bool _isPaused = false;
 
+	private bool _isPlayable;
+	private int countdownNum;
+
 	// Plane Variables
 	public Image PlanePrefab;
 
@@ -19,8 +22,10 @@ public class GameManager : MonoBehaviour
 	public GameObject PanelExplosions;
 	public GameObject PanelObstacles;
 	public GameObject PanelMissiles;
+	public GameObject PanelGameOverMenu;
+	public GameObject PanelCountdown;
 
-public Plane planeLeft;
+	public Plane planeLeft;
 	public Plane planeRight;
 
 	public Image planeLeftImage;
@@ -64,8 +69,10 @@ public Plane planeLeft;
 		PanelCollectables = PanelMain.transform.FindChild("Collectables").gameObject;
 		PanelObstacles = PanelMain.transform.FindChild("Obstacles").gameObject;
 		PanelMissiles = PanelMain.transform.FindChild("Missiles").gameObject;
+		PanelGameOverMenu = this.transform.FindChild("PanelGameOver").gameObject;
+		PanelCountdown = this.transform.FindChild("PanelCountdown").gameObject;
 
-		CreateNewPlanes();
+		StartNewGame();
 
 		bg = GetComponent<Background>();
 		bg.gm = this;
@@ -117,37 +124,36 @@ public Plane planeLeft;
 
 	void CreateNewPlanes()
 	{
-		float sideOffset = 120f;
+		float sideOffset = 200f;
 		float bottomOffset = 40f;
 
 		if (planeLeftImage == null)
 		{
 			planeLeftImage = Instantiate(PlanePrefab) as Image;
-			planeLeftImage.transform.SetParent( PanelPlanes.transform );
+			planeLeftImage.gameObject.transform.SetParent( PanelPlanes.transform, true );
 			planeLeftImage.gameObject.name = "Plane";
-			planeLeftImage.transform.position = new Vector3(sideOffset - 568, bottomOffset - 320, 0f);
 			planeLeft = planeLeftImage.gameObject.GetComponent<Plane>();
 			planeLeft.gm = this;
 			planeLeft.isLeft = true;
 			planeLeft.infoBar = PanelMain.transform.FindChild("InfoBars").FindChild("Left").GetComponent<InfoBar>();
 			planeLeft.infoBar.SetPlane(planeLeft);
 			planeLeft.infoBar.UpdateBar();
-
+			planeLeftImage.rectTransform.position = new Vector3(sideOffset - 568f, bottomOffset - 320f, 0f) ;
 		}
 		else
 		{
-			planeLeftImage.gameObject.SetActive( true );
-			planeLeft.infoBar.gameObject.SetActive(true);
 			planeLeft.ResetSupplies();
-			planeLeftImage.transform.position = new Vector3(sideOffset - 568, bottomOffset - 320, 0f);
+			planeLeftImage.gameObject.SetActive( true );
+			planeLeftImage.transform.position = new Vector3(sideOffset, bottomOffset, 0f);
+			planeLeft.infoBar.gameObject.SetActive(true);
 		}
 
 		if (planeRightImage == null)
 		{
 			planeRightImage = Instantiate(PlanePrefab) as Image;
-			planeRightImage.transform.SetParent( PanelPlanes.transform );
+			planeRightImage.gameObject.transform.SetParent( PanelPlanes.transform, true );
 			planeRightImage.gameObject.name = "Plane";
-			planeRightImage.transform.position = new Vector3(Screen.width - sideOffset - planeRightImage.rectTransform.rect.width - 568, bottomOffset - 320, 0f);
+			planeRightImage.transform.position = new Vector3(Screen.width - sideOffset - 568f, bottomOffset - 320f, 0f);
 			planeRight = planeRightImage.gameObject.GetComponent<Plane>();
 			planeRight.gm = this;
 			planeRight.isLeft = false;
@@ -157,10 +163,10 @@ public Plane planeLeft;
 		}
 		else
 		{
-			planeRightImage.gameObject.SetActive( true );
-			planeRight.infoBar.gameObject.SetActive(true);
 			planeRight.ResetSupplies();
-			planeRightImage.transform.position = new Vector3(Screen.width - sideOffset - planeRightImage.rectTransform.rect.width - 568, bottomOffset - 320, 0f);
+			planeRightImage.gameObject.SetActive( true );
+			planeRightImage.transform.position = new Vector3(Screen.width - sideOffset, bottomOffset, 0f);
+			planeRight.infoBar.gameObject.SetActive(true);
 		}
 
 	}
@@ -218,6 +224,70 @@ public Plane planeLeft;
 
 	public void RampGameSpeed()
 	{
-		gameSpeed += 0.1f;
+		gameSpeed += 0.25f;
+	}
+
+	public bool isPlayable
+	{
+		get{ return _isPlayable;}
+		set{_isPlayable = value;}
+	}
+	
+
+	public void StartNewGame()
+	{
+		HidePanels();
+		isPlayable = false;
+		UnpauseGame();
+
+		CreateNewPlanes();
+
+		countdownNum = 3;
+		Countdown();
+
+	}
+
+	void HidePanels()
+	{
+		PanelCountdown.gameObject.SetActive( false );
+		PanelGameOverMenu.gameObject.SetActive( false );
+	}
+
+	void Countdown()
+	{
+		if ( countdownNum == 0 )
+		{
+			isPlayable = true;
+			HidePanels();
+			stats.ResetScore();
+			score.gameObject.SetActive(true);
+		}
+		else
+		{
+			PanelCountdown.gameObject.SetActive( true );
+			PanelCountdown.gameObject.transform.GetChild(0).GetComponent<Text>().text = countdownNum.ToString();
+			countdownNum--;
+			Invoke("Countdown", 1.0f);
+		}
+	}
+
+	public void GameOver()
+	{
+		isPlayable = false;
+		score.gameObject.SetActive(false);
+
+		PanelGameOverMenu.transform.GetChild(2).GetComponent<Text>().text = stats.GetScore().ToString();
+		if ( stats.CheckNewHighScore() )
+		{
+			Debug.Log ("Hi");
+			PanelGameOverMenu.transform.GetChild(3).GetComponent<Text>().text = "New Highscore!!";
+		}
+		else
+		{
+			Debug.Log ("low");
+			PanelGameOverMenu.transform.GetChild(3).GetComponent<Text>().text = "Highscore: " + stats.GetHighScore().ToString();
+		}
+
+		PanelGameOverMenu.SetActive(true);
 	}
 }
