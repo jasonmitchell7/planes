@@ -67,7 +67,7 @@ public class CollectableManager : MonoBehaviour
 		foreach (HealthPack hp in healthInUse)
 		{
 			Vector3 pos = hp.gameObject.transform.position;
-			pos.y = pos.y - hp.speed;
+			pos.y = pos.y - hp.speed*gm.gameSpeed;
 			if ( pos.y >= 0 )
 			{
 				hp.gameObject.transform.position = pos;
@@ -122,7 +122,7 @@ public class CollectableManager : MonoBehaviour
 		foreach (AmmoPack ap in ammoInUse)
 		{
 			Vector3 pos = ap.gameObject.transform.position;
-			pos.y = pos.y - ap.speed;
+			pos.y = pos.y - ap.speed*gm.gameSpeed;
 			if ( pos.y >= 0 )
 			{
 				ap.gameObject.transform.position = pos;

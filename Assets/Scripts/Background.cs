@@ -41,7 +41,7 @@ public class Background : MonoBehaviour
 				if (i != null)
 				{
 					Vector3 pos = i.gameObject.transform.position;
-					pos.y = pos.y - BGMoveSpeed;
+					pos.y = pos.y - BGMoveSpeed*gm.gameSpeed;
 					if (pos.y >= 0 )
 					{
 						i.gameObject.transform.position = pos;

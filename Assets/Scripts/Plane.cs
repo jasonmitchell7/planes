@@ -12,7 +12,7 @@ public class Plane : MonoBehaviour
 	public int health;
 	public int maxAmmo;
 	public int ammo;
-	public int planesCollideDamage = 5;
+	public int planesCollideDamage = 20;
 	public float rotationSpeed = 1;
 
 	private bool isMoving = false;
@@ -80,7 +80,7 @@ public class Plane : MonoBehaviour
 	public void MoveLeft(bool forceMove)
 	{
 		Vector3 pos = this.transform.position;
-		pos.x = pos.x - moveSpeed;
+		pos.x = pos.x - moveSpeed*gm.gameSpeed;
 
 		if (forceMove)
 		{
@@ -105,7 +105,7 @@ public class Plane : MonoBehaviour
 	public void MoveRight(bool forceMove)
 	{
 		Vector3 pos = this.transform.position;
-		pos.x = pos.x + moveSpeed;
+		pos.x = pos.x + moveSpeed*gm.gameSpeed;
 		
 		if (forceMove)
 		{
@@ -165,9 +165,19 @@ public class Plane : MonoBehaviour
 		return true;
 	}
 
-	void DoDamage( int damage )
+	public void DoDamage( int damage )
 	{
 		health = health - damage;
+		LoseControl();
+
+		Vector3 pos = this.transform.position;
+		pos.y += planeWidth;
+
+		ParticleSystem exp = gm.GetExplosion(pos);
+		exp.Play();
+
+		CheckDead();
+
 
 	}
 

@@ -236,6 +236,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2012184929}
   m_RootOrder: 0
+--- !u!1 &550488005
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 550488006}
+  m_Layer: 5
+  m_Name: Obstacles
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &550488006
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 550488005}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2012184929}
+  m_RootOrder: 1
+  m_AnchorMin: {x: .5, y: .5}
+  m_AnchorMax: {x: .5, y: .5}
+  m_AnchoredPosition: {x: -568, y: -319.75}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: .5, y: .5}
 --- !u!1 &561661387
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,6 +283,7 @@ GameObject:
   - 114: {fileID: 561661393}
   - 114: {fileID: 561661394}
   - 114: {fileID: 561661395}
+  - 114: {fileID: 561661396}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -341,12 +374,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2824c5180ad614e46acf2d6fa08df328, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameSpeed: 1
   PlanePrefab: {fileID: 11473786, guid: 253f62e5233d87c458b48ac6029f14e7, type: 2}
   PanelMain: {fileID: 0}
   PanelPlanes: {fileID: 0}
   PanelClouds: {fileID: 0}
   PanelCollectables: {fileID: 0}
   PanelExplosions: {fileID: 1427203782}
+  PanelObstacles: {fileID: 0}
   planeLeft: {fileID: 0}
   planeRight: {fileID: 0}
   planeLeftImage: {fileID: 0}
@@ -364,6 +399,10 @@ MonoBehaviour:
   cm: {fileID: 0}
   HealthPackPrefab: {fileID: 11448482, guid: 8fb05cec0e3d6e948ac95b1e6a4fa42f, type: 2}
   AmmoPackPrefab: {fileID: 11485942, guid: cadba1f5ea360d14095ba4718c4d6c84, type: 2}
+  om: {fileID: 0}
+  ObstacleSprites:
+  - {fileID: 21300000, guid: 316ac8aaca5872642a7d16e4efa2cc4e, type: 3}
+  ObstaclePrefab: {fileID: 11477890, guid: fe4d4dd636775eb47956dc61c2e697c1, type: 2}
 --- !u!114 &561661393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,6 +445,22 @@ MonoBehaviour:
   gm: {fileID: 0}
   healthSpawnChance: .00200000009
   ammoSpawnChance: .00499999989
+--- !u!114 &561661396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 561661387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 713813e332025f04d82e04814e723599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gm: {fileID: 0}
+  speedMin: 2
+  speedMax: 6
+  obstaclesMax: 20
+  spawnChance: .0299999993
 --- !u!1 &592162493
 GameObject:
   m_ObjectHideFlags: 0
@@ -432,7 +487,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2012184929}
-  m_RootOrder: 2
+  m_RootOrder: 3
 --- !u!1 &618374401
 GameObject:
   m_ObjectHideFlags: 0
@@ -680,7 +735,7 @@ RectTransform:
   - {fileID: 1642587862}
   - {fileID: 1428104677}
   m_Father: {fileID: 2012184929}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -712,7 +767,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2012184929}
-  m_RootOrder: 1
+  m_RootOrder: 2
 --- !u!1 &1427203782
 GameObject:
   m_ObjectHideFlags: 0
@@ -739,7 +794,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2012184929}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
   m_AnchoredPosition: {x: 0, y: -.25}
@@ -1047,6 +1102,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 479870690}
+  - {fileID: 550488006}
   - {fileID: 1399759420}
   - {fileID: 592162494}
   - {fileID: 1427203783}

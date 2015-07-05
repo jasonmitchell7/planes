@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour 
 {
+	public float gameSpeed = 1f;
+
 	// Plane Variables
 	public Image PlanePrefab;
 
@@ -13,6 +15,7 @@ public class GameManager : MonoBehaviour
 	public GameObject PanelClouds;
 	public GameObject PanelCollectables;
 	public GameObject PanelExplosions;
+	public GameObject PanelObstacles;
 
 	public Plane planeLeft;
 	public Plane planeRight;
@@ -36,12 +39,19 @@ public class GameManager : MonoBehaviour
 	public Image HealthPackPrefab;
 	public Image AmmoPackPrefab;
 
+	// Obstacle Variables
+	public ObstacleManager om;
+	public List<Sprite> ObstacleSprites;
+	public Image ObstaclePrefab;
+
+
 	void Start () 
 	{
 		PanelMain = this.transform.FindChild("PanelMain").gameObject;
 		PanelPlanes = PanelMain.transform.FindChild("Planes").gameObject;
 		PanelClouds = PanelMain.transform.FindChild("Clouds").gameObject;
 		PanelCollectables = PanelMain.transform.FindChild("Collectables").gameObject;
+		PanelObstacles = PanelMain.transform.FindChild("Obstacles").gameObject;
 
 		CreateNewPlanes();
 
@@ -50,6 +60,9 @@ public class GameManager : MonoBehaviour
 
 		cm = GetComponent<CollectableManager>();
 		cm.gm = this;
+
+		om = GetComponent<ObstacleManager>();
+		om.gm = this;
 
 		Explosions = new List<ParticleSystem>();
 
@@ -66,6 +79,11 @@ public class GameManager : MonoBehaviour
 		if (cm != null )
 		{
 			cm.MoveCollectables();
+		}
+
+		if (om != null )
+		{
+			om.MoveObstacles();
 		}
 	}
 
