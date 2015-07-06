@@ -48,25 +48,25 @@ public class Plane : MonoBehaviour
 		{
 			if (Random.Range (0f,1f) < 0.5 )
 			{
-				RotateLeft(10);
+				RotateLeft(10f/gm.gameSpeed);
 			}
 			else
 			{
-				RotateRight (10);
+				RotateRight (10f/gm.gameSpeed);
 			}
 		}
 	}
 
 	void RotateMiddle(float speedMod)
 	{
-		Quaternion q = Quaternion.Slerp (this.transform.rotation,Quaternion.Euler(0,0,0), Time.deltaTime*rotationSpeed*speedMod);
+		Quaternion q = Quaternion.Slerp (this.transform.rotation,Quaternion.Euler(0,0,0), Time.deltaTime*rotationSpeed*speedMod*gm.gameSpeed);
 		q = Quaternion.Euler (new Vector3(0f,0f,q.eulerAngles.z));
 		this.transform.rotation = q;
 	}
 
 	void RotateLeft(float speedMod)
 	{
-		Quaternion q = Quaternion.Slerp (this.transform.rotation,Quaternion.Euler(0,0,45), Time.deltaTime*rotationSpeed*speedMod);
+		Quaternion q = Quaternion.Slerp (this.transform.rotation,Quaternion.Euler(0,0,45), Time.deltaTime*rotationSpeed*speedMod*gm.gameSpeed);
 		q = Quaternion.Euler (new Vector3(0f,0f,q.eulerAngles.z));
 		this.transform.rotation = q;
 
@@ -74,7 +74,7 @@ public class Plane : MonoBehaviour
 
 	void RotateRight(float speedMod)
 	{
-		Quaternion q = Quaternion.Slerp (this.transform.rotation,Quaternion.Euler(0,0,-45), Time.deltaTime*rotationSpeed*speedMod);
+		Quaternion q = Quaternion.Slerp (this.transform.rotation,Quaternion.Euler(0,0,-45), Time.deltaTime*rotationSpeed*speedMod*gm.gameSpeed);
 		q = Quaternion.Euler (new Vector3(0f,0f,q.eulerAngles.z));
 		this.transform.rotation = q;
 ;

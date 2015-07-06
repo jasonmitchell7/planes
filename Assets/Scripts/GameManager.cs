@@ -22,7 +22,9 @@ public class GameManager : MonoBehaviour
 	public GameObject PanelExplosions;
 	public GameObject PanelObstacles;
 	public GameObject PanelMissiles;
+	public GameObject PanelMainMenu;
 	public GameObject PanelGameOverMenu;
+	public GameObject PanelPauseMenu;
 	public GameObject PanelCountdown;
 
 	public Plane planeLeft;
@@ -69,10 +71,12 @@ public class GameManager : MonoBehaviour
 		PanelCollectables = PanelMain.transform.FindChild("Collectables").gameObject;
 		PanelObstacles = PanelMain.transform.FindChild("Obstacles").gameObject;
 		PanelMissiles = PanelMain.transform.FindChild("Missiles").gameObject;
+		PanelMainMenu = this.transform.FindChild("PanelMainMenu").gameObject;
 		PanelGameOverMenu = this.transform.FindChild("PanelGameOver").gameObject;
+		PanelPauseMenu = this.transform.FindChild("PanelPauseMenu").gameObject;
 		PanelCountdown = this.transform.FindChild("PanelCountdown").gameObject;
 
-		StartNewGame();
+		//StartNewGame();
 
 		bg = GetComponent<Background>();
 		bg.gm = this;
@@ -92,9 +96,10 @@ public class GameManager : MonoBehaviour
 		stats.gm = this;
 		stats.ResetScore();
 
+		ShowMainMenu();
 
 	}
-	
+
 
 	void Update () 
 	{
@@ -122,6 +127,20 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
+	public void ShowMainMenu()
+	{
+		HidePanels();
+		PanelMainMenu.SetActive(true);
+		if ( stats.GetHighScore() == 0 )
+		{
+			PanelMainMenu.transform.GetChild(1).GetComponent<Text>().text = "Welcome to 'Planes!', the game where you will try to control two planes at once. Jump right into the game or learn how to play.";
+		}
+		else
+		{
+			PanelMainMenu.transform.GetChild(1).GetComponent<Text>().text = "Welcome back to 'Planes!', are you ready to beat the highscore of " + stats.GetHighScore().ToString() + "? Jump in the cockpit and start flying!";    
+		}
+	}
+
 	void CreateNewPlanes()
 	{
 		float sideOffset = 200f;
@@ -138,7 +157,8 @@ public class GameManager : MonoBehaviour
 			planeLeft.infoBar = PanelMain.transform.FindChild("InfoBars").FindChild("Left").GetComponent<InfoBar>();
 			planeLeft.infoBar.SetPlane(planeLeft);
 			planeLeft.infoBar.UpdateBar();
-			planeLeftImage.rectTransform.position = new Vector3(sideOffset - 568f, bottomOffset - 320f, 0f) ;
+			//planeLeftImage.rectTransform.position = new Vector3(sideOffset - 568f, bottomOffset - 320f, 0f);
+			planeLeftImage.transform.position = new Vector3(sideOffset, bottomOffset, 0f);
 		}
 		else
 		{
@@ -153,13 +173,14 @@ public class GameManager : MonoBehaviour
 			planeRightImage = Instantiate(PlanePrefab) as Image;
 			planeRightImage.gameObject.transform.SetParent( PanelPlanes.transform, true );
 			planeRightImage.gameObject.name = "Plane";
-			planeRightImage.transform.position = new Vector3(Screen.width - sideOffset - 568f, bottomOffset - 320f, 0f);
 			planeRight = planeRightImage.gameObject.GetComponent<Plane>();
 			planeRight.gm = this;
 			planeRight.isLeft = false;
 			planeRight.infoBar = PanelMain.transform.FindChild("InfoBars").FindChild("Right").GetComponent<InfoBar>();
 			planeRight.infoBar.SetPlane(planeRight);
 			planeRight.infoBar.UpdateBar();
+			//planeRightImage.transform.position = new Vector3(Screen.width - sideOffset - 568f, bottomOffset - 320f, 0f);
+			planeRightImage.transform.position = new Vector3(Screen.width - sideOffset, bottomOffset, 0f);
 		}
 		else
 		{
@@ -240,6 +261,8 @@ public class GameManager : MonoBehaviour
 		isPlayable = false;
 		UnpauseGame();
 
+		gameSpeed = 1f;
+
 		CreateNewPlanes();
 
 		countdownNum = 3;
@@ -249,8 +272,9 @@ public class GameManager : MonoBehaviour
 
 	void HidePanels()
 	{
-		PanelCountdown.gameObject.SetActive( false );
-		PanelGameOverMenu.gameObject.SetActive( false );
+		PanelCountdown.SetActive( false );
+		PanelGameOverMenu.SetActive( false );
+		PanelMainMenu.SetActive(false);
 	}
 
 	void Countdown()
@@ -279,12 +303,10 @@ public class GameManager : MonoBehaviour
 		PanelGameOverMenu.transform.GetChild(2).GetComponent<Text>().text = stats.GetScore().ToString();
 		if ( stats.CheckNewHighScore() )
 		{
-			Debug.Log ("Hi");
 			PanelGameOverMenu.transform.GetChild(3).GetComponent<Text>().text = "New Highscore!!";
 		}
 		else
 		{
-			Debug.Log ("low");
 			PanelGameOverMenu.transform.GetChild(3).GetComponent<Text>().text = "Highscore: " + stats.GetHighScore().ToString();
 		}
 
