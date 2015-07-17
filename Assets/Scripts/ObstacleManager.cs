@@ -11,13 +11,13 @@ public class ObstacleManager : MonoBehaviour
 	private List<Image> obstaclesInUse;
 	private List<float> obstacleSpeeds;
 
-	public float speedMin = 2f;
-	public float speedMax = 6f;
+	private float speedMin = 2f;
+	private float speedMax = 5f;
 
 	private int obstaclesMax = 12;
 	private int obstaclesMaxTotal = 20;
 
-	public float spawnChance = 0.03f;
+	public float spawnChance = 0.015f;
 
 	void Start()
 	{
@@ -42,7 +42,7 @@ public class ObstacleManager : MonoBehaviour
 	{
 		if (obstaclesInUse.Count + obstaclesAvailable.Count < obstaclesMaxTotal)
 		{
-			if ( (Random.Range (0.0f, 1.0f) <= spawnChance) & (obstaclesInUse.Count < obstaclesMax) )
+			if ( (Random.Range (0.0f, 1.0f) <= spawnChance*gm.gameSpeed) & (obstaclesInUse.Count < obstaclesMax) )
 			{
 				Image obs = GetNewObstacle();
 				ActivateObstacle( obs );

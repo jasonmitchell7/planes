@@ -10,6 +10,8 @@ public class InfoBar : MonoBehaviour
 	public Image HealthPickup;
 	public Image AmmoPickup;
 
+	private float padding = 5f;
+
 	private Plane plane;
 
 	public void SetPlane(Plane p)
@@ -53,5 +55,17 @@ public class InfoBar : MonoBehaviour
 	public void HideRedButton()
 	{
 		RedButton.gameObject.SetActive(false);
+	}
+
+	public void RepositionBar()
+	{
+		if ( this.plane.isLeft )
+		{
+			this.transform.position = new Vector3(padding, padding, 0f);
+		}
+		else
+		{
+			this.transform.position = new Vector3(Screen.width - padding, padding, 0f);
+		}
 	}
 }

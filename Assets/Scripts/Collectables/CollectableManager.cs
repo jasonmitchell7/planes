@@ -45,7 +45,7 @@ public class CollectableManager : MonoBehaviour
 	{
 		float r = Random.Range (0.0f, 1.0f);
 
-		if ( (r <= healthSpawnChance) & (healthInUse.Count < healthPackMax) )
+		if ( (r <= healthSpawnChance*gm.gameSpeed) & (healthInUse.Count < healthPackMax) )
 		{
 			HealthPack hp = GetNewHealthPack();
 			healthInUse.Add( hp );
@@ -53,7 +53,7 @@ public class CollectableManager : MonoBehaviour
 
 		r = Random.Range (0.0f, 1.0f);
 		
-		if ( (r <= ammoSpawnChance) & (ammoInUse.Count < ammoPackMax) )
+		if ( (r <= ammoSpawnChance*gm.gameSpeed) & (ammoInUse.Count < ammoPackMax) )
 		{
 			AmmoPack ap = GetNewAmmoPack();
 			ammoInUse.Add( ap );

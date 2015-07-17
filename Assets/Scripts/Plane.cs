@@ -94,7 +94,7 @@ public class Plane : MonoBehaviour
 			return;
 		}
 		
-		if (hasControl)
+		if (hasControl & !isDying)
 		{
 			if ( CheckPos(pos) )
 			{
@@ -119,7 +119,7 @@ public class Plane : MonoBehaviour
 			return;
 		}
 
-		if (hasControl)
+		if (hasControl & !isDying)
 		{
 			if ( CheckPos(pos) )
 			{

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour 
 {
+	public UIManager uiMan;
+
 	public float gameSpeed = 1f;
 
 	private bool _isPaused = false;
@@ -76,7 +78,8 @@ public class GameManager : MonoBehaviour
 		PanelPauseMenu = this.transform.FindChild("PanelPauseMenu").gameObject;
 		PanelCountdown = this.transform.FindChild("PanelCountdown").gameObject;
 
-		//StartNewGame();
+		uiMan = GetComponent<UIManager>();
+		//uiMan.gm = this;
 
 		bg = GetComponent<Background>();
 		bg.gm = this;
@@ -190,6 +193,10 @@ public class GameManager : MonoBehaviour
 			planeRight.infoBar.gameObject.SetActive(true);
 		}
 
+		planeLeft.infoBar.RepositionBar();
+		planeLeft.infoBar.gameObject.SetActive(true);
+		planeRight.infoBar.RepositionBar();
+		planeRight.infoBar.gameObject.SetActive(true);
 	}
 
 
